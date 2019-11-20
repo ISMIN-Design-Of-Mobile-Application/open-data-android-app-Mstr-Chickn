@@ -2,14 +2,16 @@
 ## [APP NAME]  
   
 Codé par :   
- - [prenom1] [nom1]   
- - [prenom2] [nom2]   
+ - Guillaume Baranger   
+ - Benjamin Anthouard   
 
 ## Description  
   
-URL des données : [URL]  
+URL des données : https://www.data.gouv.fr/fr/datasets/r/c1085ea9-9c6c-4b54-befc-30ffbc2d7413
   
-[A completer]  
+Ce jeu de données contient une liste des monuments remarquables et des tombes de personnalités du Cimetière du Père-Lachaise.
+
+Pour chaque entrée, on retrouve la position géographique très précise du monument ou de la tombe, issue du projet OpenStreetMap, les données biographiques des résidents du cimetière, issues de Wikipédia, ainsi que les données photographiques issues de Wikimedia Commons.
   
 ## Librairies externes  
   
