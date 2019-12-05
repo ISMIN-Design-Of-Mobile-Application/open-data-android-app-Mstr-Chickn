@@ -7,11 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+
+
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,8 +27,9 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CarteFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CarteFragment : Fragment() {
+class CarteFragment : Fragment(),OnMapReadyCallback {
     // TODO: Rename and change types of parameters
+    private lateinit var mMap: GoogleMap
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
@@ -44,8 +46,13 @@ class CarteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_carte, container, false)
+
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.mapView) as SupportMapFragment
+        mapFragment.getMapAsync(this)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_carte, container, false)
+        return rootView
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -102,5 +109,13 @@ class CarteFragment : Fragment() {
                 }
             }
     }
-    
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        // Add a marker in Sydney and move the camera
+        val sydney = LatLng(-34.0, 151.0)
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
 }
