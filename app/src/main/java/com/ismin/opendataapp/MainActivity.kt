@@ -1,11 +1,16 @@
 package com.ismin.opendataapp
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionListener {
+
+    override fun onFragmentInteraction(uri: Uri) { //pour plus tard avec la map
+         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +22,16 @@ class MainActivity : AppCompatActivity() {
             val fragment = InfoFragment()
             fragmentTransaction.replace(R.id.main_fragments_view, fragment)
             fragmentTransaction.commit()
+        }
+
+        val buttCarte = findViewById<Button>(R.id.carte_button)
+        buttCarte.setOnClickListener {
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            val fragment = CarteFragment()
+            fragmentTransaction.replace(R.id.main_fragments_view, fragment)
+            fragmentTransaction.commit()
+                //val intent = Intent(this, MapsActivity::class.java)
+                //startActivity(intent)
         }
     }
 }

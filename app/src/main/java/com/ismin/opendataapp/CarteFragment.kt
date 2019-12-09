@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
+import android.widget.Toast
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.ClusterManager
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,8 +28,10 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CarteFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CarteFragment : Fragment() {
+class CarteFragment : Fragment(),OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     // TODO: Rename and change types of parameters
+    private lateinit var mMap: GoogleMap
+    private lateinit var mClusterManager: ClusterManager<PointCarte>
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
@@ -44,8 +48,13 @@ class CarteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_carte, container, false)
+
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.mapView) as SupportMapFragment
+        mapFragment.getMapAsync(this)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_carte, container, false)
+        return rootView
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -102,5 +111,61 @@ class CarteFragment : Fragment() {
                 }
             }
     }
-    
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        setUpClusterer()
+        mMap.setOnInfoWindowClickListener(this)
+
+        // Add a marker in Sydney and move the camera
+        //val sydney = LatLng(-34.0, 151.0)
+        //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        //val sydney1 = LatLng(-34.5, 151.0)
+        //mMap.addMarker(MarkerOptions().position(sydney1).title("Marker in Sydney1"))
+        //val sydney2 = LatLng(-34.0, 151.5)
+        //mMap.addMarker(MarkerOptions().position(sydney2).title("Marker in Sydney2"))
+        //val sydney3 = LatLng(-34.5, 151.5)
+        //mMap.addMarker(MarkerOptions().position(sydney3).title("Marker in Sydney3"))
+        //val sydney4 = LatLng(-33.5, 151.0)
+        //mMap.addMarker(MarkerOptions().position(sydney4).title("Marker in Sydney4"))
+    }
+
+    private fun setUpClusterer() {
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
+        val sydney = LatLng(-34.0, 151.0)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        mClusterManager = ClusterManager(activity, mMap)
+        mMap.setOnCameraIdleListener(mClusterManager)
+        mMap.setOnMarkerClickListener(mClusterManager)
+        addItems()
+    }
+
+    private fun addItems() {
+        val sydney = PointCarte(-34.0, 151.0, "Sydney", "Description de Sydney")
+        mClusterManager.addItem(sydney)
+
+        val sydney1 = PointCarte(-34.5, 151.0, "Sydney1", "Description de Sydney1")
+        mClusterManager.addItem(sydney1)
+
+        val sydney2 = PointCarte(-34.0, 151.3, "Sydney2", "Description de Sydney2")
+        mClusterManager.addItem(sydney2)
+
+        val sydney3 = PointCarte(-34.2, 151.0, "Sydney3", "Description de Sydney3")
+        mClusterManager.addItem(sydney3)
+
+        val sydney4 = PointCarte(-34.4, 151.5, "Sydney4", "Description de Sydney4")
+        mClusterManager.addItem(sydney4)
+
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        Toast.makeText(
+            activity, "Info window clicked",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 }
