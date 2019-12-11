@@ -1,11 +1,18 @@
 package com.ismin.opendataapp
 
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.element_liste.*
+import java.net.URL
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,21 +28,32 @@ class InfoFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    //private var image : Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+            //val urlImg = URL("https://www.parisinfo.com/var/otcp/sites/images/media/1.-photos/02.-sites-culturels-630-x-405/cimetiere-du-pere-lachaise-automne-630x405-c-thinkstock/37716-1-fre-FR/Cimetiere-du-Pere-Lachaise-automne-630x405-C-Thinkstock.jpg")
+            //image = BitmapFactory.decodeStream(urlImg.openConnection().getInputStream())
         }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val rootView =inflater.inflate(R.layout.fragment_info, container, false)
+
+        //val urlImg = URL("https://www.parisinfo.com/var/otcp/sites/images/media/1.-photos/02.-sites-culturels-630-x-405/cimetiere-du-pere-lachaise-automne-630x405-c-thinkstock/37716-1-fre-FR/Cimetiere-du-Pere-Lachaise-automne-630x405-C-Thinkstock.jpg")
+        //val image : Bitmap = BitmapFactory.decodeStream(urlImg.openConnection().getInputStream())
+        val viewImg=rootView.findViewById<ImageView>(R.id.imagetest)
+        //viewImg.setImageBitmap(image)
+        Picasso.with(context).load("https://www.parisinfo.com/var/otcp/sites/images/media/1.-photos/02.-sites-culturels-630-x-405/cimetiere-du-pere-lachaise-automne-630x405-c-thinkstock/37716-1-fre-FR/Cimetiere-du-Pere-Lachaise-automne-630x405-C-Thinkstock.jpg").into(viewImg)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_info, container, false)
+        return rootView
     }
 
 
