@@ -3,8 +3,13 @@ package com.ismin.opendataapp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.httpGet
+import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionListener, ListeFragment.OnFragmentInteractionListener {
@@ -16,7 +21,10 @@ class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         listElement = arrayListOf()
+
+        getBDD()
         val buttInfo = findViewById<Button>(R.id.info_button)
         buttInfo.setOnClickListener {
             val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -34,11 +42,6 @@ class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionLis
                 //val intent = Intent(this, MapsActivity::class.java)
                 //startActivity(intent)
         }
-
-        //à supprimer après
-        val element1: Element = Element("lol", "juste un mot", R.drawable.maxime_le_moine)
-        listElement.add(element1)
-        listElement.add(Element("lol2", "hehe", R.drawable.maxime_le_moine))
 
         //listener qui charge le fragment liste
         val listButton =  findViewById<Button>(R.id.liste_button)
@@ -63,4 +66,29 @@ class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionLis
         intent.putExtras(bundle)
         this.startActivity(intent)
     }
+
+    //on utilise Fuel pour récuperer les données
+    fun getBDD() {
+        val myurl: String = "https://www.data.gouv.fr/s/resources/monuments-et-tombes-de-personnalites-du-cimetiere-du-pere-lachaise/20141103-215847/perelachaise_data.json"
+        Fuel.get(myurl).responseString { request, response, result ->
+            //do something with response
+            result.fold({ d ->
+                //do something with data
+                val response = result.get()
+                Toast.makeText(this, "It works, values: $result", Toast.LENGTH_SHORT).show()
+                val jsonObject = JSONObject(response)
+                val dataArray = jsonObject.getJSONArray("monuments")
+                for (i in 0 until dataArray.length()) {
+                    val dataobj = dataArray.getJSONObject(i)
+                    val element: Element = Element(dataobj.getString("nom"), dataobj.getJSONObject("node_osm").getString("longitude"), R.drawable.maxime_le_moine, dataobj.getJSONObject("node_osm").getString("latitude").toFloat(), dataobj.getJSONObject("node_osm").getString("longitude").toFloat())
+                    listElement.add(element)
+
+                }
+
+            }, { err ->
+                //do something with error
+            })
+        }
+    }
+
 }
