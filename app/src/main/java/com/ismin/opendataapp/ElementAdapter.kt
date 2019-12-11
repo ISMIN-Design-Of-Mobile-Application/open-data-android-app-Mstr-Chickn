@@ -1,11 +1,15 @@
 package com.ismin.opendataapp
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class ElementAdapter(private val icons: ArrayList<Element> , private val onItemClick: (Int) -> Unit) :
-    RecyclerView.Adapter<ElementViewHolder>() {
+    RecyclerView.Adapter<ElementViewHolder>(){
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ElementViewHolder {
         val row = LayoutInflater.from(parent.context).inflate(R.layout.element_liste, parent,
@@ -14,10 +18,10 @@ class ElementAdapter(private val icons: ArrayList<Element> , private val onItemC
     }
 
     override fun onBindViewHolder(viewholder: ElementViewHolder, position: Int) {
-        val (name, biography, image) = this.icons[position]
+        val (name, imageURL) = this.icons[position]
 
         viewholder.txvName.text = name
-        viewholder.imvImage.setImageResource(image)
+        viewholder.updateWithUrl(imageURL)
     }
 
     override fun getItemCount(): Int {

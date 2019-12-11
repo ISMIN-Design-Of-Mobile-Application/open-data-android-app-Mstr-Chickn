@@ -51,7 +51,7 @@ class InfoFragment : Fragment() {
         //val image : Bitmap = BitmapFactory.decodeStream(urlImg.openConnection().getInputStream())
         val viewImg=rootView.findViewById<ImageView>(R.id.imagetest)
         //viewImg.setImageBitmap(image)
-        Picasso.with(context).load("https://www.parisinfo.com/var/otcp/sites/images/media/1.-photos/02.-sites-culturels-630-x-405/cimetiere-du-pere-lachaise-automne-630x405-c-thinkstock/37716-1-fre-FR/Cimetiere-du-Pere-Lachaise-automne-630x405-C-Thinkstock.jpg").into(viewImg)
+        Picasso.get().load("https://www.parisinfo.com/var/otcp/sites/images/media/1.-photos/02.-sites-culturels-630-x-405/cimetiere-du-pere-lachaise-automne-630x405-c-thinkstock/37716-1-fre-FR/Cimetiere-du-Pere-Lachaise-automne-630x405-C-Thinkstock.jpg").into(viewImg)
         // Inflate the layout for this fragment
         return rootView
     }

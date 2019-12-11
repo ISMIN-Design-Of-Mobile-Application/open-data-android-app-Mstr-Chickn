@@ -3,10 +3,12 @@ package com.ismin.opendataapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 
 class DescriptionActivity : AppCompatActivity() {
 
@@ -21,12 +23,23 @@ class DescriptionActivity : AppCompatActivity() {
 
         //on récupère les données
         val data = bundle!!.getSerializable("Element") as Element
-        val (name, biography, image) = data
+        val (name, imageURL, posX, posY, personnes) = data
 
         //on affiche les données
         this.findViewById<TextView>(R.id.titleDescription).text = name
-        this.findViewById<TextView>(R.id.biography).text = biography
-        this.findViewById<ImageView>(R.id.photoDescription).setImageResource(image)
+        var textBiography: StringBuffer = StringBuffer()
+        for(personne in personnes){
+            textBiography.append("<Strong>Nom :</Strong> ${personne.name}\"")
+            textBiography.append("<br><Strong>Activité</Strong> ${personne.activité}\"")
+            textBiography.append("<br><Strong>date naissance</Strong> ${personne.date_naissance}\"")
+            textBiography.append("<br><Strong>date décès :</Strong> ${personne.date_mort}")
+            textBiography.append("<br><a href = ${personne.lien_wikipedia}> en savoir plus : ${personne.lien_wikipedia} </a> <br><br>")
+        }
+        this.findViewById<TextView>(R.id.biography).text = Html.fromHtml(textBiography.toString())
+
+        Picasso.get()
+            .load(imageURL)
+            .into(this.findViewById<ImageView>(R.id.photoDescription))
 
         //Listener qui termine l'activity et retourne au MainActivity
         backButton = this.findViewById(R.id.backButton)

@@ -3,6 +3,7 @@ package com.ismin.opendataapp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.insert
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -80,7 +81,18 @@ class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionLis
                 val dataArray = jsonObject.getJSONArray("monuments")
                 for (i in 0 until dataArray.length()) {
                     val dataobj = dataArray.getJSONObject(i)
-                    val element: Element = Element(dataobj.getString("nom"), dataobj.getJSONObject("node_osm").getString("longitude"), R.drawable.maxime_le_moine, dataobj.getJSONObject("node_osm").getString("latitude").toFloat(), dataobj.getJSONObject("node_osm").getString("longitude").toFloat())
+                    //les liens ont changé du http au https ... on rajoute donc le s
+                    val bonURL: String = dataobj.getJSONObject("image_principale").getString("url_original").substring(0, 4) + "s" + dataobj.getJSONObject("image_principale").getString("url_original").substring(4)
+
+                    //on créer d'abord la table des personnes enterrées à cet endroit
+                    var personnes: ArrayList<Personne> = arrayListOf()
+                    val dataPersonneArray = dataobj.getJSONArray("personnalites")
+                    for(i in 0 until dataPersonneArray.length()){
+                        var dataobjPersonne = dataPersonneArray.getJSONObject(i)
+                        var personne = Personne(dataobjPersonne.getString("nom"), dataobjPersonne.getString("activite"), dataobjPersonne.getString("date_naissance"), dataobjPersonne.getString("date_deces"), dataobjPersonne.getString("lien_wikipedia"))
+                        personnes.add(personne)
+                    }
+                    val element: Element = Element(dataobj.getString("nom"), bonURL, dataobj.getJSONObject("node_osm").getString("latitude").toFloat(), dataobj.getJSONObject("node_osm").getString("longitude").toFloat(), personnes)
                     listElement.add(element)
 
                 }
