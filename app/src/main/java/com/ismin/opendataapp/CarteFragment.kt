@@ -1,6 +1,7 @@
 package com.ismin.opendataapp
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ class CarteFragment : Fragment(),OnMapReadyCallback, GoogleMap.OnInfoWindowClick
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+    private var data: ArrayList<Element>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +51,9 @@ class CarteFragment : Fragment(),OnMapReadyCallback, GoogleMap.OnInfoWindowClick
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_carte, container, false)
+
+        data = arguments!!.getSerializable("element") as ArrayList<Element>
+        //val (name, imageURL, posX, posY, personnes) = data!!
 
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.mapView) as SupportMapFragment
@@ -135,8 +140,9 @@ class CarteFragment : Fragment(),OnMapReadyCallback, GoogleMap.OnInfoWindowClick
 
     private fun setUpClusterer() {
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val Cim = LatLng(48.861396, 2.393338)
+        val zoom = 14.5f
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Cim,zoom))
 
         mClusterManager = ClusterManager(activity, mMap)
         mMap.setOnCameraIdleListener(mClusterManager)
@@ -145,27 +151,34 @@ class CarteFragment : Fragment(),OnMapReadyCallback, GoogleMap.OnInfoWindowClick
     }
 
     private fun addItems() {
-        val sydney = PointCarte(-34.0, 151.0, "Sydney", "Description de Sydney")
-        mClusterManager.addItem(sydney)
 
-        val sydney1 = PointCarte(-34.5, 151.0, "Sydney1", "Description de Sydney1")
-        mClusterManager.addItem(sydney1)
-
-        val sydney2 = PointCarte(-34.0, 151.3, "Sydney2", "Description de Sydney2")
-        mClusterManager.addItem(sydney2)
-
-        val sydney3 = PointCarte(-34.2, 151.0, "Sydney3", "Description de Sydney3")
-        mClusterManager.addItem(sydney3)
-
-        val sydney4 = PointCarte(-34.4, 151.5, "Sydney4", "Description de Sydney4")
-        mClusterManager.addItem(sydney4)
+        var posList=0
+        for(elt in data!!) {
+            posList= data!!.indexOf(elt)
+            var description = "Cliquer pour plus d'infos\n"+posList.toString()
+            //for(pers in elt.personnes) {
+                //description=description +pers.name+" ("+pers.date_naissance+","+pers.date_mort+") : "+pers.activité+"\n"
+            //}
+            val newPoint = PointCarte(elt.posX.toDouble(), elt.posY.toDouble(), elt.name, description)
+            mClusterManager.addItem(newPoint)
+        }
 
     }
 
     override fun onInfoWindowClick(marker: Marker) {
+        val posList=marker.snippet.split("\n")[1]
         Toast.makeText(
-            activity, "Info window clicked",
+            activity, """Info window clicked $posList""",
             Toast.LENGTH_SHORT
         ).show()
+        openDescription(posList.toInt())
+    }
+
+    fun openDescription(position: Int) {
+        val intent = Intent(activity, DescriptionActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("Element", data!![position])
+        intent.putExtras(bundle)
+        this.startActivity(intent)
     }
 }

@@ -36,8 +36,14 @@ class MainActivity : AppCompatActivity(), CarteFragment.OnFragmentInteractionLis
 
         val buttCarte = findViewById<Button>(R.id.carte_button)
         buttCarte.setOnClickListener {
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
             val fragment = CarteFragment()
+
+            //data à transmettre
+            val bundle = Bundle()
+            bundle.putSerializable("element", listElement)
+            fragment.arguments = bundle
+
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.main_fragments_view, fragment)
             fragmentTransaction.commit()
                 //val intent = Intent(this, MapsActivity::class.java)
